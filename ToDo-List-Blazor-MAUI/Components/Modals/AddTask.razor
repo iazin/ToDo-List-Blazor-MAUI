@@ -1,0 +1,78 @@
+﻿@using System.Threading
+@inject ITasksService tasksFunctions
+@inject NavigationManager uriHelper
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Task</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="TaskName">Task Name</label>
+                    <input type="text" class="form-control" id="TaskName" @bind-value="todo.Name">
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskDate">Date</label>
+                    <input type="date" class="form-control" id="TaskDate" @bind-value="todo.Date">
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskPriority">Priority</label>
+                    <input type="text" class="form-control" id="TaskPriority" @bind-value="todo.Priority">
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskStatus">Status</label>
+                    <input type="text" class="form-control" id="TaskStatus" @bind-value="todo.Status">
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="TaskStatus">Content</label>
+                    <input type="text" class="form-control" id="TaskStatus" @bind-value="todo.Content">
+                </div>
+                <br />
+            </div>
+            <div class="modal-footer">
+                <div @onclick="Add"><a type="button" class="btn btn-primary" href="todo_list">Add Task</a></div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    Todo todo = new();
+    public Guid Guid = Guid.NewGuid();
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    private void Add()
+    {
+        tasksFunctions.AddTodo(todo);
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+}

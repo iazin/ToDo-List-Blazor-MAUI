@@ -1,0 +1,51 @@
+﻿@using System.Collections.Generic
+@using System.Threading
+@inject ITasksService tasksFunctions
+@inject NavigationManager uriHelper
+
+
+<br hidden="@Hide">
+<div class="card text-center" hidden="@Hide">
+    <div class="card-header">
+        <div class="row justify-content-around">
+            <div class="col-md-auto fs-4">@todo.Name</div>
+            <div class="col-md-auto fs-4">@DateOnly.FromDateTime(todo.Date)</div>
+            <div class="col-md-auto fs-4">@Math.Round((todo.Date - DateTime.Now).TotalDays+1) Days</div>
+            <div class="col-md-auto fs-4">@todo.Status</div>
+            <div class="col-md-auto fs-4">@todo.Priority</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="card-text fs-5">@todo.Content</p>
+    </div>
+    <div class="card-footer">
+        <a class="btn btn-primary" @onclick="OpenModalEdit">Edit task</a>
+        <a class="btn btn-primary" type="submit" @onclick="Delete">Delete task</a>
+    </div>
+</div>
+
+<ToDo_List_Blazor_MAUI.Components.Modals.EditTask @ref="EditTask" />
+
+@code {
+    [Parameter]
+    public Todo todo { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private ToDo_List_Blazor_MAUI.Components.Modals.EditTask EditTask { get; set; }
+
+    private bool Hide = false;
+
+    private async Task Delete()
+    {
+        tasksFunctions.DeleteTodo(todo.Id);
+        Hide = true;
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: false);
+    }
+
+    private async Task OpenModalEdit()
+    {
+        await EditTask.Open(Id);
+    }
+}

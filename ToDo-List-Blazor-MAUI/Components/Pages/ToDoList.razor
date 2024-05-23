@@ -1,0 +1,46 @@
+﻿@page "/todo_list"
+@inject ITasksService tasksFunctions
+
+<div class="container">
+    <h1 class="text-center mb-3">To-Do List</h1>
+
+    <div class="d-flex justify-content-around my-3">
+        <button class="btn btn-primary" @onclick="OpenModalAdd">Add Task</button>
+    </div>
+
+    <div class="card text-center">
+        <div class="card-header">
+            <div class="row justify-content-around">
+                <div class="col-md-auto fs-4">Name</div>
+                <div class="col-md-auto fs-4">Date</div>
+                <div class="col-md-auto fs-4">Countdown</div>
+                <div class="col-md-auto fs-4">Status</div>
+                <div class="col-md-auto fs-4">Priority</div>
+            </div>
+        </div>
+    </div>
+
+    @foreach (var task in Tasks)
+    {
+        <ToDo_List_Blazor_MAUI.Components.Modals.TodoCard todo="@task" Id="@task.Id" />
+    }
+</div>
+
+<ToDo_List_Blazor_MAUI.Components.Modals.AddTask @ref="AddTask" />
+
+@code {
+    List<Todo> Tasks = new List<Todo>();
+    private ToDo_List_Blazor_MAUI.Components.Modals.AddTask AddTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasksFunctions.CreateTableTodo();
+        Tasks = tasksFunctions.GetTodos();
+    }
+
+    private void OpenModalAdd()
+    {
+        AddTask.Open();
+    }
+
+}
